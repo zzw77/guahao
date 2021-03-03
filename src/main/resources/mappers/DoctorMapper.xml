@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanxin.dao.Doctordao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lanxin.bean.Doctor">
+        <id column="oid" property="oid" />
+        <result column="dname" property="dname" />
+        <result column="phone" property="phone" />
+        <result column="images" property="images" />
+        <result column="hosid" property="hosid" />
+        <result column="zkid" property="zkid" />
+        <result column="ksid" property="ksid" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap1" type="com.lanxin.bean.Doctor">
+        <id column="oid" property="oid" />
+        <result column="dname" property="dname" />
+        <result column="phone" property="phone" />
+        <result column="images" property="images" />
+        <result column="hosid" property="hosid" />
+        <result column="zkid" property="zkid" />
+        <result column="ksid" property="ksid" />
+        <!--多对一-->
+        <collection property="paibans" ofType="com.lanxin.bean.Paiban">
+            <result column="amQuantity" property="amQuantity" />
+            <result column="ondate" property="ondate" />
+            <result column="onam" property="onam" />
+            <result column="docid" property="docid" />
+        </collection>
+    </resultMap>
+
+
+    <select id="selDoctor" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Doctor">
+        select d.*,zk.zkname,ks.ksname from doctor d
+        left join zhuanke zk on d.zkid=zk.oid
+        left join keshi ks on d.ksid=ks.oid
+        where d.hosid=#{hosid}
+        <if test="dname!=null">
+            and d.dname like '%${dname}%'
+        </if>
+        <if test="zkid!=null">
+            and d.zkid=#{zkid}
+        </if>
+        <if test="ksid!=null">
+            and d.ksid=#{ksid}
+        </if>
+    </select>
+
+    <select id="listPb" resultMap="BaseResultMap1" parameterType="com.lanxin.bean.Doctor">
+        select d.*,p.docid,p.onam,p.ondate,p.amQuantity from doctor d
+        left join paiban p on p.docid=d.oid
+        where d.hosid=#{hosid}
+        <if test="dname!=null">
+            and d.dname like '%${dname}%'
+        </if>
+        <if test="zkid!=null">
+            and d.zkid=#{zkid}
+        </if>
+        <if test="ksid!=null">
+            and d.ksid=#{ksid}
+        </if>
+
+    </select>
+
+</mapper>

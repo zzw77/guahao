@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanxin.dao.Zhuankedao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lanxin.bean.Zhuanke">
+        <id column="oid" property="oid" />
+        <result column="zkname" property="zkname" />
+        <result column="hosid" property="hosid" />
+        <!--多对一-->
+        <collection property="keshis" ofType="com.lanxin.bean.Keshi">
+            <id column="ksid" property="oid"/>
+            <result column="ksname" property="ksname"/>
+        </collection>
+        <collection property="maladies" ofType="com.lanxin.bean.Malady">
+            <id column="mid" property="oid"/>
+            <result column="mname" property="mname"/>
+            <result column="zkid" property="zkid"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="selzhuanke" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Zhuanke">
+          select z.* from zhuanke z where (z.hosid is null or z.hosid=#{hosid})
+          <if test="zkname!=null">
+              and zkname like '%${zkname}%'
+          </if>
+
+    </select>
+
+    <select id="zkAll" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Zhuanke">
+         select z.*,k.oid as ksid,k.ksname,m.oid as mid,m.mname from zhuanke z
+         left join keshi k on z.oid=k.zkid
+         left join malady m on m.zkid=z.oid
+         where z.hosid is null or z.hosid=#{hosid}
+
+
+    </select>
+
+
+</mapper>

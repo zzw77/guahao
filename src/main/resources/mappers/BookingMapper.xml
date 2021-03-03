@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanxin.dao.Bookingdao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lanxin.bean.Booking">
+        <id column="oid" property="oid" />
+        <result column="uid" property="uid" />
+        <result column="ksid" property="ksid" />
+        <result column="hosid" property="hosid" />
+        <result column="mid" property="mid" />
+        <result column="docid" property="docid" />
+        <result column="orderdate" property="orderdate" />
+        <result column="ampm" property="ampm" />
+    </resultMap>
+
+    <select id="listYypage" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Booking">
+        select b.*,u.username,m.mname,ks.ksname,d.dname from booking b
+        left join users u on b.uid=u.oid
+        left join malady m on b.mid=m.oid
+        left join keshi ks on b.ksid=ks.oid
+        left join doctor d on b.docid=d.oid
+        left join paiban p on b.oid=p.docid
+        where b.hosid=#{hosid}
+        <if test="ksid!=null">
+            and b.ksid=#{ksid}
+        </if>
+        <if test="mid!=null">
+            and b.mid=mid
+        </if>
+        <if test="docid!=null">
+            and b.docid=#{docid}
+        </if>
+        <if test="ampm!=null">
+            and b.ampm=#{ampm}
+        </if>
+        <if test="username!=null">
+            and u.username like '%${username}%'
+        </if>
+    </select>
+
+
+    <select id="kscount" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Booking">
+        select k.ksname,count(*) as count2 from booking  b
+            left join keshi k on k.oid=b.ksid where b.hosid=#{hosid}
+
+            <if test="startDate!=null and endDate==null">
+                and orderdate &gt;=#{startDate}
+            </if>
+            <if test="startDate!=null and endDate!=null">
+                and orderdate between #{startDate} and #{endDate}
+            </if>
+            <if test="startDate==null and endDate!=null">
+                and orderdate &lt;=#{endDate}
+            </if>
+            group by k.ksname
+
+    </select>
+
+    <select id="doccount" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Booking">
+        select d.dname,count(*) as count2 from booking b
+        left join doctor d on d.oid=b.docid where b.hosid=#{hosid}
+        <if test="startDate!=null and endDate==null">
+            and orderdate &gt;=#{startDate}
+        </if>
+        <if test="startDate!=null and endDate!=null">
+            and orderdate between #{startDate} and #{endDate}
+        </if>
+        <if test="startDate==null and endDate!=null">
+            and orderdate &lt;=#{endDate}
+        </if>
+        group by d.dname
+
+    </select>
+
+
+
+</mapper>

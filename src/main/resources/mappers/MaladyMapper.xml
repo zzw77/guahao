@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanxin.dao.Maladydao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lanxin.bean.Malady">
+        <id column="oid" property="oid" />
+        <result column="mname" property="mname" />
+        <result column="zkid" property="zkid" />
+        <result column="hid" property="hid" />
+    </resultMap>
+
+    <select id="selMalady" resultMap="BaseResultMap" parameterType="com.lanxin.bean.Malady">
+        select ma.*,zk.zkname from malady ma left join zhuanke zk on ma.zkid=zk.oid
+        where(ma.hid is null or ma.hid=#{hid})
+        <if test="mname!=null">
+            and ma.mname like '%${mname}%'
+        </if>
+        <if test="zkid!=null">
+            and ma.zkid=#{zkid}
+        </if>
+
+    </select>
+
+</mapper>

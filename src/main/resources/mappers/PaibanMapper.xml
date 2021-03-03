@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanxin.dao.Paibandao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lanxin.bean.Paiban">
+        <id column="oid" property="oid" />
+        <result column="amQuantity" property="amQuantity" />
+        <result column="ondate" property="ondate" />
+        <result column="onam" property="onam" />
+        <result column="docid" property="docid" />
+    </resultMap>
+
+
+</mapper>
